@@ -59,6 +59,9 @@ class ScopeTreeVisitor(Visitor):
         ident.scope = self.current_scope
         self.visit(node.initializer)
 
+    def visit_ConstDecl(self, node):
+        return self.visit_VarDecl(node)
+        
     def visit_Identifier(self, node):
         node.scope = self.current_scope
 

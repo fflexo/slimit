@@ -58,9 +58,12 @@ class ECMAMinifier(object):
         else:
             return '{%s}' % ''.join(children)
 
-    def visit_VarStatement(self, node):
-        s = 'var %s;' % ','.join(self.visit(child) for child in node)
+    def visit_VarStatement(self, node, name='var'):
+        s = '%s %s;' % (name,','.join(self.visit(child) for child in node))
         return s
+
+    def visit_ConstStatement(self, node):
+        return self.visit_VarStatement(node, 'const')
 
     def visit_VarDecl(self, node):
         output = []
@@ -68,6 +71,12 @@ class ECMAMinifier(object):
         if node.initializer is not None:
             output.append('=%s' % self.visit(node.initializer))
         return ''.join(output)
+
+    def visit_ConstDecl(self, node):
+        output = []
+        output.append(self.visit(node.identifier))
+        output.append('=%s' % self.visit(node.initializer))
+        return ''.join(output)    
 
     def visit_Identifier(self, node):
         return node.value

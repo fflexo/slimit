@@ -178,6 +178,12 @@ class VarDecl(Node):
     def children(self):
         return [self.identifier, self.initializer]
 
+class ConstStatement(VarStatement):
+    pass
+
+class ConstDecl(VarDecl):
+    pass
+    
 class UnaryOp(Node):
     def __init__(self, op, value, postfix=False):
         self.op = op

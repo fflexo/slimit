@@ -155,6 +155,7 @@ class Parser(object):
     def p_statement(self, p):
         """statement : block
                      | variable_statement
+                     | const_statement
                      | empty_statement
                      | expr_statement
                      | if_statement
@@ -943,6 +944,33 @@ class Parser(object):
         else:
             p[0] = ast.VarDecl(p[1], p[2])
 
+    # CONST
+    def p_const_statement(self, p):
+        """const_statement : CONST const_declaration_list SEMI
+                           | CONST const_declaration_list auto_semi
+        """
+        p[0] = ast.ConstStatement(p[2])
+
+    def p_const_declaration_list(self, p):
+        """
+        const_declaration_list \
+            : const_declaration
+            | const_declaration_list COMMA const_declaration
+        """
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[1].append(p[3])
+            p[0] = p[1]
+
+    def p_const_declaration(self, p):
+        """const_declaration : identifier initializer
+        """
+        if len(p) == 2:
+            p[0] = ast.ConstDecl(p[1])
+        else:
+            p[0] = ast.ConstDecl(p[1], p[2])
+            
     def p_initializer(self, p):
         """initializer : EQ assignment_expr"""
         p[0] = p[2]
